@@ -1,13 +1,18 @@
-# GitFlow for VS Code
+# GitFlow JCM
 
+[![Marketplace](https://img.shields.io/visual-studio-marketplace/v/JorgeCostaMacia.gitflow-vscode?label=marketplace)](https://marketplace.visualstudio.com/items?itemName=JorgeCostaMacia.gitflow-vscode)
 [![GitHub release](https://img.shields.io/github/v/release/JorgeCostaMacia/gitflow-vscode)](https://github.com/JorgeCostaMacia/gitflow-vscode/releases/latest)
 [![License: MIT](https://img.shields.io/github/license/JorgeCostaMacia/gitflow-vscode)](https://github.com/JorgeCostaMacia/gitflow-vscode/blob/master/LICENSE)
 [![Release](https://github.com/JorgeCostaMacia/gitflow-vscode/actions/workflows/release.yml/badge.svg)](https://github.com/JorgeCostaMacia/gitflow-vscode/actions/workflows/release.yml)
 
 Lightweight GitFlow extension for VS Code that runs **pure git** (no dependency on
-`git-flow-avh`). Implements the Feature / Bugfix / Release / Hotfix workflow.
+`git-flow-avh`). Implements the Feature / Bugfix / Release / Hotfix workflow, with a
+sidebar panel and command-palette actions.
 
 ## Commands
+
+All actions are available from the **GitFlow panel** in the activity bar (a tree with
+Init plus Start/Finish for each branch type), and from the Command Palette.
 
 Open the palette (`Ctrl+Shift+P`) and type **GitFlow**, or press `Shift+Alt+G` to
 open the palette already filtered by GitFlow commands:
@@ -62,7 +67,8 @@ src/
       gitflow/                  gitflow logic (service, merge, finish, defaults)
     application/                use cases (one service per use case)
     infrastructure/git/         git access (GitRunner, GitRepository implementations)
-    presentation/commands/      VS Code command handlers (the UI lives here)
+    presentation/              VS Code UI: command handlers + sidebar TreeView provider
+      commands/                 one handler per command
     shared/                     cross-cutting helpers (ErrorHandler)
 ```
 
@@ -100,7 +106,7 @@ pnpm run package      # builds the .vsix
 To debug: open the project in VS Code and press `F5`.
 
 > On first install, pnpm will ask to approve the `esbuild` build (native binary).
-> It is already allowed in `pnpm-workspace.yaml` (`onlyBuiltDependencies`).
+> It is already allowed in `pnpm-workspace.yaml` (`allowBuilds: esbuild: true`).
 
 > If you use pnpm's `minimumReleaseAge` policy and a freshly published dependency
 > (e.g. a brand-new `@types/node`) is blocked, either wait until it ages past your
@@ -129,8 +135,22 @@ against throwaway temp repositories with a local + bare remote.
 
 Handlers (VS Code UI) are not unit-tested; they would require the VS Code runtime.
 
-## Install the .vsix
+## Install
+
+### From the Marketplace (recommended)
+
+Search for **GitFlow JCM** in the Extensions view (`Ctrl+Shift+X`), or install from the command line:
+
+```bash
+code --install-extension JorgeCostaMacia.gitflow-vscode
+```
+
+### From a .vsix
+
+Download the `.vsix` from the [latest release](https://github.com/JorgeCostaMacia/gitflow-vscode/releases/latest) and install it:
 
 ```bash
 code --install-extension gitflow-vscode-1.0.0.vsix
 ```
+
+Or in VS Code: Extensions view → `...` → **Install from VSIX...**

@@ -1,2 +1,4 @@
+# Allow esbuild to run its install script (it compiles/fetches a native binary).
+# pnpm 11 replaced onlyBuiltDependencies with the allowBuilds map.
 allowBuilds:
   esbuild: true

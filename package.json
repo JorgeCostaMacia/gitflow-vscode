@@ -1,7 +1,8 @@
 {
   "name": "gitflow-vscode",
-  "displayName": "GitFlow",
+  "displayName": "GitFlow JCM",
   "description": "GitFlow workflow for VS Code — Feature, Bugfix, Release and Hotfix on pure git",
+  "icon": "resources/icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/JorgeCostaMacia/gitflow-vscode.git"
@@ -10,8 +11,8 @@
     "url": "https://github.com/JorgeCostaMacia/gitflow-vscode/issues"
   },
   "homepage": "https://github.com/JorgeCostaMacia/gitflow-vscode#readme",
-  "version": "1.0.0",
-  "publisher": "local",
+  "version": "1.2.0",
+  "publisher": "JorgeCostaMacia",
   "license": "MIT",
   "engines": {
     "vscode": "^1.90.0",
@@ -20,7 +21,18 @@
   },
   "packageManager": "pnpm@11.8.0",
   "categories": [
+    "SCM Providers",
     "Other"
+  ],
+  "keywords": [
+    "gitflow",
+    "git",
+    "flow",
+    "branch",
+    "release",
+    "hotfix",
+    "feature",
+    "workflow"
   ],
   "activationEvents": [
     "workspaceContains:.git"
@@ -160,7 +172,7 @@
     "eslint-plugin-unused-imports": "^4.4.1",
     "prettier": "^3.8.4",
     "typescript": "~6.0.3",
-    "typescript-eslint": "8.61.1",
+    "typescript-eslint": "8.62.0",
     "vitest": "^4.1.9"
   }
 }

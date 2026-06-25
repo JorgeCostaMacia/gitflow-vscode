@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "module": "preserve",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "rootDir": "./src",
+    "paths": {
+      "@domain/*": ["./src/app/domain/*"],
+      "@application/*": ["./src/app/application/*"],
+      "@infrastructure/*": ["./src/app/infrastructure/*"],
+      "@presentation/*": ["./src/app/presentation/*"],
+      "@shared/*": ["./src/app/shared/*"]
+    },
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "importHelpers": true,
+    "noEmit": true,
+    "types": ["node", "vscode"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

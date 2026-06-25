@@ -1,0 +1,166 @@
+{
+  "name": "gitflow-vscode",
+  "displayName": "GitFlow",
+  "description": "GitFlow workflow for VS Code — Feature, Bugfix, Release and Hotfix on pure git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JorgeCostaMacia/gitflow-vscode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JorgeCostaMacia/gitflow-vscode/issues"
+  },
+  "homepage": "https://github.com/JorgeCostaMacia/gitflow-vscode#readme",
+  "version": "1.0.0",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0",
+    "node": ">=26",
+    "pnpm": ">=11"
+  },
+  "packageManager": "pnpm@11.8.0",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "workspaceContains:.git"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "gitflow.init",
+        "title": "GitFlow: Init",
+        "category": "GitFlow"
+      },
+      {
+        "command": "gitflow.featureStart",
+        "title": "GitFlow: Feature Start",
+        "category": "GitFlow"
+      },
+      {
+        "command": "gitflow.featureFinish",
+        "title": "GitFlow: Feature Finish",
+        "category": "GitFlow"
+      },
+      {
+        "command": "gitflow.bugfixStart",
+        "title": "GitFlow: Bugfix Start",
+        "category": "GitFlow"
+      },
+      {
+        "command": "gitflow.bugfixFinish",
+        "title": "GitFlow: Bugfix Finish",
+        "category": "GitFlow"
+      },
+      {
+        "command": "gitflow.releaseStart",
+        "title": "GitFlow: Release Start",
+        "category": "GitFlow"
+      },
+      {
+        "command": "gitflow.releaseFinish",
+        "title": "GitFlow: Release Finish",
+        "category": "GitFlow"
+      },
+      {
+        "command": "gitflow.hotfixStart",
+        "title": "GitFlow: Hotfix Start",
+        "category": "GitFlow"
+      },
+      {
+        "command": "gitflow.hotfixFinish",
+        "title": "GitFlow: Hotfix Finish",
+        "category": "GitFlow"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "gitflow",
+          "title": "GitFlow",
+          "icon": "resources/gitflow.svg"
+        }
+      ]
+    },
+    "views": {
+      "gitflow": [
+        {
+          "id": "gitflowActions",
+          "name": "Actions",
+          "icon": "resources/gitflow.svg",
+          "contextualTitle": "GitFlow"
+        }
+      ]
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "gitflow.init"
+        },
+        {
+          "command": "gitflow.featureStart"
+        },
+        {
+          "command": "gitflow.featureFinish"
+        },
+        {
+          "command": "gitflow.bugfixStart"
+        },
+        {
+          "command": "gitflow.bugfixFinish"
+        },
+        {
+          "command": "gitflow.releaseStart"
+        },
+        {
+          "command": "gitflow.releaseFinish"
+        },
+        {
+          "command": "gitflow.hotfixStart"
+        },
+        {
+          "command": "gitflow.hotfixFinish"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "workbench.action.quickOpen",
+        "args": ">GitFlow ",
+        "key": "shift+alt+g",
+        "when": "!terminalFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc --noEmit -p ./ && node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit -p ./",
+    "lint": "eslint src test",
+    "lint-fix": "eslint src test --fix",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:all": "vitest run && vitest run --config vitest.integration.config.ts",
+    "package": "pnpm run compile && pnpm dlx @vscode/vsce package --no-dependencies"
+  },
+  "dependencies": {
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.0.0",
+    "@types/vscode": "^1.90.0",
+    "esbuild": "^0.28.1",
+    "eslint": "^10.5.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-simple-import-sort": "^13.0.0",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "prettier": "^3.8.4",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "8.61.1",
+    "vitest": "^4.1.9"
+  }
+}

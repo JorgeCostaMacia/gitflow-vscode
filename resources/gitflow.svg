@@ -1,0 +1,10 @@
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <!-- main line -->
+  <circle cx="6" cy="4" r="2"/>
+  <circle cx="6" cy="20" r="2"/>
+  <line x1="6" y1="6" x2="6" y2="18"/>
+  <!-- branch out and back -->
+  <circle cx="18" cy="12" r="2"/>
+  <path d="M6 9 q0 3 4 3 h6"/>
+  <path d="M16 12 h-6 q-4 0 -4 3"/>
+</svg>

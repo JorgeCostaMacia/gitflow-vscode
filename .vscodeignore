@@ -16,3 +16,4 @@ vitest.config.ts
 vitest.integration.config.ts
 coverage/**
 .github/**
+.gitattributes

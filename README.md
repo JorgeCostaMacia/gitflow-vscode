@@ -2,7 +2,7 @@
 
 [![GitHub release](https://img.shields.io/github/v/release/JorgeCostaMacia/gitflow-vscode)](https://github.com/JorgeCostaMacia/gitflow-vscode/releases/latest)
 [![License: MIT](https://img.shields.io/github/license/JorgeCostaMacia/gitflow-vscode)](https://github.com/JorgeCostaMacia/gitflow-vscode/blob/master/LICENSE)
-[![Build VSIX](https://github.com/JorgeCostaMacia/gitflow-vscode/actions/workflows/release.yml/badge.svg)](https://github.com/JorgeCostaMacia/gitflow-vscode/actions/workflows/release.yml)
+[![Release](https://github.com/JorgeCostaMacia/gitflow-vscode/actions/workflows/release.yml/badge.svg)](https://github.com/JorgeCostaMacia/gitflow-vscode/actions/workflows/release.yml)
 
 Lightweight GitFlow extension for VS Code that runs **pure git** (no dependency on
 `git-flow-avh`). Implements the Feature / Bugfix / Release / Hotfix workflow.

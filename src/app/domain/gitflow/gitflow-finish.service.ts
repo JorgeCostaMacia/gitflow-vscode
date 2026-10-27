@@ -23,6 +23,14 @@ export class GitflowFinish {
     const main = await this.gitflow.getMainBranch();
     const source = `${prefix}/${name}`;
 
+    // A taken tag stops the finish before anything is touched: otherwise both
+    // merges would run, the tag would fail, and the rollback would have to undo them.
+    if ((await this.repo.localTagExists(tag)) || (await this.repo.remoteTagExists(tag))) {
+      throw new Error(
+        `Tag '${tag}' already exists. Choose another version, or delete the tag if it was never published.`,
+      );
+    }
+
     await this.repo.checkout(main);
     await this.repo.pull(main);
     await this.repo.checkout(GitflowDefaults.developBranch);
@@ -30,6 +38,7 @@ export class GitflowFinish {
 
     const mainSha = await this.repo.getSha(main);
     const developSha = await this.repo.getSha(GitflowDefaults.developBranch);
+    let tagCreated = false;
 
     try {
       // 1. Merge into develop first: if it fails, main has not been touched.
@@ -44,6 +53,7 @@ export class GitflowFinish {
       //    server updates all refs or none, so main and develop never diverge
       //    remotely if one ref is rejected.
       await this.repo.createTag(tag, tagMessage);
+      tagCreated = true;
       await this.repo.push('--atomic', main, GitflowDefaults.developBranch, '--tags');
 
       // 4. Delete the remote branch first, then the local one. Deleting the
@@ -59,23 +69,24 @@ export class GitflowFinish {
       // rollback() throws if the recovery itself fails (inconsistent repo);
       // that error takes precedence. If rollback succeeds, surface the original
       // cause of the finish failure.
-      await this.rollback(main, mainSha, developSha, tag);
+      await this.rollback(main, mainSha, developSha, tagCreated ? tag : undefined);
       throw new Error(`Finish failed and was rolled back: ${ErrorHandler.messageOf(err)}`, { cause: err });
     }
 
     return main;
   }
 
-  /** Reverts main and develop to the given SHAs and deletes the tag if it was created. */
-  private async rollback(main: string, mainSha: string, developSha: string, tag: string): Promise<void> {
+  /**
+   * Reverts main and develop to the given SHAs and deletes `createdTag`, which
+   * is only passed when this run created it: a tag that was there before is never touched.
+   */
+  private async rollback(main: string, mainSha: string, developSha: string, createdTag?: string): Promise<void> {
     try {
       if (await this.repo.isMerging()) {
         await this.repo.abortMerge();
       }
-      try {
-        await this.repo.deleteTag(tag);
-      } catch {
-        /* the tag was never created */
+      if (createdTag) {
+        await this.repo.deleteTag(createdTag);
       }
       await this.repo.checkout(main);
       await this.repo.resetHard(mainSha);

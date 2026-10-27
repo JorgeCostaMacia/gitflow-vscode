@@ -89,7 +89,7 @@ the concrete implementations. The use cases and presentation never touch git dir
 - TypeScript 6 (`module: preserve`, full strict, explicit return types, no `any`)
 - Build with **esbuild** (single bundle in `dist/`)
 - ESLint 10 flat config (with `naming-convention`) + Prettier
-- Package manager: **pnpm** (Node ≥ 26)
+- Package manager: **pnpm 12**, pinned in `package.json` (`packageManager`), which also pins the Node 26 runtime (`devEngines`): pnpm downloads both when they are missing
 
 ## Development
 
@@ -108,9 +108,10 @@ To debug: open the project in VS Code and press `F5`.
 > On first install, pnpm will ask to approve the `esbuild` build (native binary).
 > It is already allowed in `pnpm-workspace.yaml` (`allowBuilds: esbuild: true`).
 
-> If you use pnpm's `minimumReleaseAge` policy and a freshly published dependency
-> (e.g. a brand-new `@types/node`) is blocked, either wait until it ages past your
-> threshold or install from the committed lockfile with `pnpm install --frozen-lockfile`.
+> `pnpm-workspace.yaml` sets `minimumReleaseAge` to 3 days: a version published more
+> recently is never installed, and a range that only a fresher version satisfies fails
+> to resolve instead of silently taking it. If an update is blocked, wait until the
+> version ages past the threshold; the committed lockfile always installs as it is.
 
 ## Testing
 

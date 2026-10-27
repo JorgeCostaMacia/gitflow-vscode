@@ -1,4 +1,4 @@
-# Allow esbuild to run its install script (it compiles/fetches a native binary).
-# pnpm 11 replaced onlyBuiltDependencies with the allowBuilds map.
-allowBuilds:
-  esbuild: true
+# Supply-chain settings (pnpm 12 checks these keys and rejects unknown ones).
+minimumReleaseAge: 4320 # 3 days, in minutes; explicit, so minimumReleaseAgeStrict is on
+allowBuilds: # reviewed packages only: true runs its build scripts, false denies them
+  esbuild: true # fetches its native binary

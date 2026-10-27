@@ -71,6 +71,7 @@ export class GitRunner implements IGitRunner {
     '-d',
     '-m',
     '-u',
+    '--cleanup=verbatim',
     '--no-ff',
     '--no-edit',
     '--hard',

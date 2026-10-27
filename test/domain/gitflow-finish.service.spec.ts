@@ -54,6 +54,8 @@ function makeRepo(overrides: Partial<Record<keyof GitRepository, unknown>> = {})
     }),
     isMerging: vi.fn(() => Promise.resolve(false)),
     localBranchExists: vi.fn(() => Promise.resolve(true)),
+    localTagExists: vi.fn(() => Promise.resolve(false)),
+    remoteTagExists: vi.fn(() => Promise.resolve(false)),
     output: { log: vi.fn(), show: vi.fn() },
     ...overrides,
   };
@@ -141,5 +143,46 @@ describe('GitflowFinish.finishTagged', () => {
     await expect(
       finish.finishTagged({ prefix: 'release', name: '4.0.0', tag: 'v4.0.0', tagMessage: 'Release v4.0.0' }),
     ).rejects.toThrow(/inconsistent state/);
+  });
+
+  it.each([
+    ['locally', { localTagExists: vi.fn(() => Promise.resolve(true)) }],
+    ['on the remote', { remoteTagExists: vi.fn(() => Promise.resolve(true)) }],
+  ])('when the tag already exists %s, stops before touching anything', async (_where, overrides) => {
+    const repo = makeRepo(overrides);
+    const finish = makeFinish(repo);
+
+    await expect(
+      finish.finishTagged({ prefix: 'release', name: '5.0.0', tag: 'v5.0.0', tagMessage: 'Release v5.0.0' }),
+    ).rejects.toThrow(/Tag 'v5.0.0' already exists/);
+
+    expect(repo.checkout).not.toHaveBeenCalled();
+    expect(repo.mergeNoFf).not.toHaveBeenCalled();
+    expect(repo.deleteTag).not.toHaveBeenCalled();
+  });
+
+  it('when the push is rejected after tagging, the rollback deletes the tag it created', async () => {
+    const repo = makeRepo({ push: vi.fn(() => Promise.reject(new Error('rejected'))) });
+    const finish = makeFinish(repo);
+
+    await expect(
+      finish.finishTagged({ prefix: 'release', name: '6.0.0', tag: 'v6.0.0', tagMessage: 'Release v6.0.0' }),
+    ).rejects.toThrow(/rolled back/);
+
+    expect(repo.deleteTag).toHaveBeenCalledWith('v6.0.0');
+  });
+
+  it('when the finish fails before tagging, the rollback deletes no tag', async () => {
+    const repo = makeRepo({
+      mergeNoFf: vi.fn(() => Promise.reject(new Error('CONFLICT'))),
+      isMerging: vi.fn(() => Promise.resolve(true)),
+    });
+    const finish = makeFinish(repo);
+
+    await expect(
+      finish.finishTagged({ prefix: 'release', name: '7.0.0', tag: 'v7.0.0', tagMessage: 'Release v7.0.0' }),
+    ).rejects.toThrow();
+
+    expect(repo.deleteTag).not.toHaveBeenCalled();
   });
 });

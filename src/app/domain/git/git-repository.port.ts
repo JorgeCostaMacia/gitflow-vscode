@@ -14,6 +14,8 @@ export interface IGitRepository {
   getLocalBranches(prefix: string): Promise<string[]>;
   localBranchExists(branch: string): Promise<boolean>;
   remoteBranchExists(branch: string): Promise<boolean>;
+  localTagExists(tag: string): Promise<boolean>;
+  remoteTagExists(tag: string): Promise<boolean>;
   getSha(ref: string): Promise<string>;
   isMerging(): Promise<boolean>;
   hasUncommittedChanges(): Promise<boolean>;

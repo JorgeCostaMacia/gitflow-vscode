@@ -42,6 +42,16 @@ export class GitRepository implements IGitRepository {
     return this.refExists(`refs/remotes/origin/${branch}`);
   }
 
+  async localTagExists(tag: string): Promise<boolean> {
+    return this.refExists(`refs/tags/${tag}`);
+  }
+
+  /** Asks origin itself: a tag pushed from another clone is not in the local refs until fetched. */
+  async remoteTagExists(tag: string): Promise<boolean> {
+    const raw = await this.git.run('ls-remote', '--tags', 'origin', `refs/tags/${tag}`);
+    return raw.length > 0;
+  }
+
   async getSha(ref: string): Promise<string> {
     return this.git.run('rev-parse', ref);
   }
@@ -121,8 +131,9 @@ export class GitRepository implements IGitRepository {
     await this.git.run('reset', '--hard', sha);
   }
 
+  /** `--cleanup=verbatim` keeps the message as given: the default strips `#` lines as comments. */
   async createTag(name: string, message: string): Promise<void> {
-    await this.git.run('tag', '-a', name, '-m', message);
+    await this.git.run('tag', '-a', name, '--cleanup=verbatim', '-m', message);
   }
 
   async deleteTag(name: string): Promise<void> {

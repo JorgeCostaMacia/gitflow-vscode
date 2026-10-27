@@ -107,6 +107,48 @@ describe('integration: edge cases and safety', () => {
     });
   });
 
+  describe('existing tag', () => {
+    it('a finish whose tag already exists leaves the tag and both branches untouched', async () => {
+      sandbox.initDevelop();
+
+      const start = new HotfixStartService(sandbox.repo, config);
+      await start.execute('9.9.8');
+      sandbox.commitFile('fix.txt', 'fix\n', 'Hotfix change');
+
+      // the version was already released from somewhere else
+      sandbox.git('tag', '-a', 'v9.9.8', 'main', '-m', 'Release v9.9.8');
+      const tagBefore = sandbox.git('rev-parse', 'v9.9.8');
+      const mainBefore = sandbox.git('rev-parse', 'main');
+      const developBefore = sandbox.git('rev-parse', 'develop');
+
+      const finish = new HotfixFinishService(config, gitflowFinishSvc);
+      await expect(finish.execute('9.9.8')).rejects.toThrow(/already exists/);
+
+      expect(sandbox.git('rev-parse', 'v9.9.8')).toBe(tagBefore);
+      expect(sandbox.git('rev-parse', 'main')).toBe(mainBefore);
+      expect(sandbox.git('rev-parse', 'develop')).toBe(developBefore);
+      expect(sandbox.localBranches()).toContain('hotfix/9.9.8');
+    });
+
+    it('a tag only on the remote is detected too', async () => {
+      sandbox.git('tag', '-a', 'v9.9.7', 'main', '-m', 'Release v9.9.7');
+      sandbox.git('push', '-q', 'origin', 'v9.9.7');
+      sandbox.git('tag', '-d', 'v9.9.7');
+
+      expect(await sandbox.repo.localTagExists('v9.9.7')).toBe(false);
+      expect(await sandbox.repo.remoteTagExists('v9.9.7')).toBe(true);
+      expect(await sandbox.repo.remoteTagExists('v9.9.6')).toBe(false);
+    });
+  });
+
+  describe('tag message', () => {
+    it('keeps lines starting with # (markdown headings are not stripped as comments)', async () => {
+      await sandbox.repo.createTag('v0.0.1', '# Notes\n\n- one change');
+
+      expect(sandbox.git('tag', '-l', '--format=%(contents)', 'v0.0.1')).toContain('# Notes');
+    });
+  });
+
   describe('init guard: repo without commits', () => {
     it('hasCommits is false and ensureHasCommits throws on an unborn repo', async () => {
       const empty = GitSandbox.createEmpty();
